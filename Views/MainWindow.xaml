@@ -140,12 +140,12 @@
                   Width="65"
                   Background="#DDDDDD">
 
-                <behaviour:Interaction.Triggers>
+                <!--<behaviour:Interaction.Triggers>
                     <behaviour:EventTrigger EventName="MouseLeave">
                         <behaviour:InvokeCommandAction 
                                         Command="{Binding PanelMouseLeaveCommand}"/>
                     </behaviour:EventTrigger>
-                </behaviour:Interaction.Triggers>
+                </behaviour:Interaction.Triggers>-->
 
                 <StackPanel x:Name="st_pnl">
                     <Grid Height="90">

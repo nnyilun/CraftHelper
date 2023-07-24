@@ -6,8 +6,8 @@
              xmlns:local="clr-namespace:CraftHelper.Views"
              xmlns:vm="clr-namespace:CraftHelper.ViewModels" d:DataContext="{d:DesignInstance Type=vm:SearchUsrCtrlViewModel}"
              mc:Ignorable="d" 
-             d:DesignHeight="640" d:DesignWidth="1024">
-    <Grid Background="Green">
+             d:DesignHeight="600" d:DesignWidth="959">
+    <Grid Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="25*"/>
             <RowDefinition Height="2*"/>
@@ -17,8 +17,8 @@
                    Margin="10,0,0,0"
                    x:Name="state_text"
                    FontSize="18"
-                   Text="{Binding StateText}"
-                   Foreground="{Binding StateColor}"
+                   Text="{Binding StateText, FallbackValue=获取状态失败}"
+                   Foreground="{Binding StateColor, FallbackValue=Coral}"
                    Style="{StaticResource font_style}"/>
     </Grid>
 </UserControl>
