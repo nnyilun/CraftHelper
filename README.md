@@ -17,3 +17,12 @@
 
 ## 都还没做，别急）
 是为了帮助自己学习c#以及WPF桌面应用程序的开发，所以指不定哪天就弃坑了）
+
+## 遵从MIT协议
+详情请查看LICENSE.txt
+
+软件图标为本人参考Minecraft游戏中钻石镐的图标而绘制。
+
+软件内侧边栏图标来自[阿里巴巴矢量图标库](https://www.iconfont.cn/collections/detail?cid=45375)
+
+侧边栏参考[Navigation-Drawer-Sidebar-Menu-in-WPF](https://github.com/CSharpDesignPro/Navigation-Drawer-Sidebar-Menu-in-WPF)
