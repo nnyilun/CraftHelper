@@ -1,0 +1,113 @@
+﻿<UserControl x:Class="CraftHelper.Views.AboutUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:behaviour="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:local="clr-namespace:CraftHelper.Views"
+             xmlns:vm="clr-namespace:CraftHelper.ViewModels" d:DataContext="{d:DesignInstance Type=vm:AboutUsrCtrlViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="8*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        
+        <TextBlock Grid.Row="1"
+                   Text="关于"
+                   FontSize="36"
+                   Margin="50,0,0,0"
+                   Style="{StaticResource font_style}"/>
+
+        <TextBlock Grid.Row="2" Grid.Column="0"
+                   Margin="50,0,0,0"
+                   VerticalAlignment="Center"
+                   Text="程序版本{Binding VersionText}"
+                   FontSize="22"
+                   Style="{StaticResource font_style}"/>
+
+        <TextBlock Grid.Row="3" Grid.Column="0"
+                   Margin="50,0,0,0"
+                   VerticalAlignment="Center"
+                   Text="运行时版本{Binding runtimeVersionText}" 
+                   FontSize="22"
+                   Style="{StaticResource font_style}"/>
+
+        <TextBlock Grid.Row="4" Grid.Column="0"
+                   Margin="50,0,0,0"
+                   VerticalAlignment="Center"
+                   Text="系统版本{Binding OSText}" 
+                   FontSize="22"
+                   Style="{StaticResource font_style}"/>
+
+        <Grid Grid.Row="5" Grid.Column="0" Grid.RowSpan="2">
+
+            <TextBlock Margin="50,0,0,0"
+                       VerticalAlignment="Center"
+                       Text="侧边栏图标来源: 阿里巴巴矢量图标库" 
+                       FontSize="18"
+                       Foreground="#666666"
+                       TextDecorations="Underline" 
+                       Cursor="Hand"
+                       Style="{StaticResource font_style}">
+            
+                <behaviour:Interaction.Triggers>
+                    <behaviour:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                        <behaviour:InvokeCommandAction 
+                                        Command="{Binding AlibabaIconLinkedCommand}"/>
+                    </behaviour:EventTrigger>
+                </behaviour:Interaction.Triggers>
+
+            </TextBlock>
+
+            <TextBlock Margin="50,70,0,0"
+                       VerticalAlignment="Center"
+                       Text="侧边栏实现参考: Navigation-Drawer-Sidebar-Menu-in-WPF" 
+                       FontSize="18"
+                       Foreground="#666666"
+                       TextDecorations="Underline" 
+                       Cursor="Hand"
+                       Style="{StaticResource font_style}">
+
+                <behaviour:Interaction.Triggers>
+                    <behaviour:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                        <behaviour:InvokeCommandAction 
+                                        Command="{Binding SideBarLinkedCommand}"/>
+                    </behaviour:EventTrigger>
+                </behaviour:Interaction.Triggers>
+
+            </TextBlock>
+
+        </Grid>
+
+        <TextBlock Grid.Row="8" Grid.Column="0"
+                   Margin="10,0,0,0"
+                   x:Name="state_text"
+                   FontSize="18"
+                   Text="{Binding StateText}"
+                   Foreground="{Binding StateColor}"
+                   Style="{StaticResource font_style}"/>
+
+        <Image Grid.Row="6" Grid.Column="1" Grid.RowSpan="3" 
+               Height="100" 
+               Width="100"
+               Margin="40,20,0,0" 
+               HorizontalAlignment="Center" 
+               VerticalAlignment="Center" 
+               Source="../Assets/icon256.png"/>
+
+    </Grid>
+</UserControl>

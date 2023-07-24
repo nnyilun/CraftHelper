@@ -1,0 +1,659 @@
+﻿<Window x:Class="CraftHelper.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:behaviour="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:local="clr-namespace:CraftHelper.Views"
+        xmlns:vm="clr-namespace:CraftHelper.ViewModels" d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
+        mc:Ignorable="d"
+        Title="CraftHelper"
+        Height="600" 
+        Width="1024"
+        ResizeMode="CanMinimize"
+        Topmost="False"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+
+        <!-- // Toggle Button Style Template //-->
+
+        <ImageBrush x:Key="tb_mouse_over"
+                    ImageSource="../Assets/Btn_menu_over.png"/>
+
+        <!--
+        <Style TargetType="ToolTip" x:Key="tt_style">
+            <Setter Property="Placement" Value="Right"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Margin" Value="20,0,0,0"/>
+            <Setter Property="Background" Value="#CCEEFF"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontFamily" Value="Fonts/LXGWWenKai-Regular.ttf"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="PlacementRectangle" Value="60,0,0,0"/>
+            <Setter Property="HorizontalOffset" Value="15"/>
+            <Setter Property="VerticalOffset" Value="6"/>
+            <Setter Property="HasDropShadow" Value="True"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+        -->
+
+        <Style x:Key="tb_style" TargetType="{x:Type ToggleButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border x:Name="border"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Background="{TemplateBinding Background}"
+                                SnapsToDevicePixels="True"/>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background"
+                                        TargetName="border"
+                                        Value="{StaticResource tb_mouse_over}"/>
+
+                                <Setter Property="BorderBrush"
+                                        TargetName="border"
+                                        Value="{StaticResource tb_mouse_over}"/>
+                            </Trigger>
+
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Background"
+                                        TargetName="border"
+                                        Value="{StaticResource tb_mouse_over}"/>
+
+                                <Setter Property="BorderBrush"
+                                        TargetName="border"
+                                        Value="{StaticResource tb_mouse_over}"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="1">
+            <ContentControl Content="{Binding MainContent}"/>
+        </Grid>
+        
+        <!--<DockPanel Grid.Column="1">
+            <StackPanel Background="LightBlue">
+                <RadioButton IsChecked="True"
+                                 Command="{Binding ChangePageCommand}" 
+                                 CommandParameter="MainUserControl" 
+                                 Content="红色" 
+                                 Margin="10"/>
+                <RadioButton Command="{Binding ChangePageCommand}" 
+                                 CommandParameter="SearchUserControl" 
+                                 Content="绿色" 
+                                 Margin="10"/>
+            </StackPanel>
+            <ContentControl Content="{Binding MainContent}"/>
+        </DockPanel>-->
+
+        <!--<Grid ShowGridLines="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="65"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <DockPanel Grid.Column="1">
+                <StackPanel Background="LightBlue">
+                    <RadioButton IsChecked="True"
+                                 Command="{Binding ChangePageCommand}" 
+                                 CommandParameter="MainUserControl" 
+                                 Content="红色" 
+                                 Margin="10"/>
+                    <RadioButton Command="{Binding ChangePageCommand}" 
+                                 CommandParameter="SearchUserControl" 
+                                 Content="绿色" 
+                                 Margin="10"/>
+                </StackPanel>
+                <ContentControl Content="{Binding MainContent}"/>
+            </DockPanel>
+        </Grid>-->
+
+        <Grid Background="White">
+            <!--<Grid x:Name="BG" PreviewMouseLeftButtonDown="BG_PreviewMouseLeftDown">
+                <Grid.Background>
+                    <ImageBrush x:Name="img_bg"
+                                ImageSource="../Assets/img_background.png"
+                                Stretch="Fill"/>
+                </Grid.Background>
+            </Grid>-->
+
+            <!--// Navigation panel //-->
+            <Grid x:Name="nav_pnl"
+                  HorizontalAlignment="Left"
+                  Width="65"
+                  Background="#DDDDDD">
+
+                <behaviour:Interaction.Triggers>
+                    <behaviour:EventTrigger EventName="MouseLeave">
+                        <behaviour:InvokeCommandAction 
+                                        Command="{Binding PanelMouseLeaveCommand}"/>
+                    </behaviour:EventTrigger>
+                </behaviour:Interaction.Triggers>
+
+                <StackPanel x:Name="st_pnl">
+                    <Grid Height="90">
+
+                        <!--<TextBlock Grid.Row="1"
+                                   Grid.Column="0"
+                                   Margin="70, -20, 0, 0"
+                                   Text="工具箱"
+                                   Foreground="Black"
+                                   FontSize="22"
+                                   Background="Transparent"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Style="{StaticResource font_style}">
+
+                            <TextBlock.Effect>
+                                <DropShadowEffect BlurRadius="2"
+                                                  ShadowDepth="1"
+                                                  Direction="-90"
+                                                  Color="Black"/>
+                            </TextBlock.Effect>
+                        </TextBlock>-->
+
+                        <ToggleButton x:Name="Tg_Btn"
+                                      Grid.Column="0"
+                                      VerticalAlignment="Center"
+                                      HorizontalAlignment="Left"
+                                      Margin="18,-20,0,0"
+                                      Height="30"
+                                      Width="30"
+                                      BorderThickness="0"
+                                      Style="{StaticResource tb_style}">
+
+                            <behaviour:Interaction.Triggers>
+                                <behaviour:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding TgBtnMouseLeftDown}"
+                                        PassEventArgsToCommand="True"/>
+                                </behaviour:EventTrigger>
+
+                                <behaviour:EventTrigger EventName="PreviewMouseMove">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding TgBtnMouseMove}"
+                                        PassEventArgsToCommand="True"/>
+                                </behaviour:EventTrigger>
+
+                                <behaviour:EventTrigger EventName="PreviewMouseLeftButtonUp">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding TgBtnMouseLeftUp}"
+                                        PassEventArgsToCommand="True"/>
+                                </behaviour:EventTrigger>
+                            </behaviour:Interaction.Triggers>
+
+                            <ToggleButton.Background>
+                                <ImageBrush ImageSource="../Assets/Btn_menu.png"
+                                            Stretch="Fill"/>
+                            </ToggleButton.Background>
+
+                            <!--<ToggleButton.Triggers>
+                                <EventTrigger RoutedEvent="ToggleButton.Unchecked">
+                                    <BeginStoryboard>
+                                        <Storyboard x:Name="HideStackPanel">
+                                            <DoubleAnimation Storyboard.TargetName="nav_pnl"
+                                                             Storyboard.TargetProperty="Width"
+                                                             BeginTime="0:0:0"
+                                                             From="160" To="65"
+                                                             Duration="0:0:0.2"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+
+                                <EventTrigger RoutedEvent="ToggleButton.Checked">
+                                    <BeginStoryboard>
+                                        <Storyboard x:Name="ShowStackPanel">
+                                            <DoubleAnimation Storyboard.TargetName="nav_pnl"
+                                                             Storyboard.TargetProperty="Width"
+                                                             BeginTime="0:0:0"
+                                                             From="65" To="160"
+                                                             Duration="0:0:0.2" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </ToggleButton.Triggers>-->
+                        </ToggleButton>
+                    </Grid>
+
+                    <ListView x:Name="LV"
+                              Background="Transparent"
+                              BorderBrush="Transparent"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                        <!-- home button -->
+                        <ListViewItem HorizontalAlignment="Left"
+                                      Margin="0,0,0,15"
+                                      x:Name="Home_Btn">
+
+                            <behaviour:Interaction.Triggers>
+                                <behaviour:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ChangePageCommand}" 
+                                        CommandParameter="MainUserControl"/>
+                                </behaviour:EventTrigger>
+
+                                <behaviour:EventTrigger EventName="MouseEnter">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ListViewItemMouseEnterCommand}" 
+                                        CommandParameter="主页"/>
+                                </behaviour:EventTrigger>
+
+                                <behaviour:EventTrigger EventName="MouseLeave">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ListViewItemMouseLeaveCommand}"/>
+                                </behaviour:EventTrigger>
+                            </behaviour:Interaction.Triggers>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Width="180">
+
+                                <Image Source="../Assets/Btn_home.png"
+                                       Stretch="Fill"
+                                       Margin="11,0,0,0"
+                                       Height="30"
+                                       Width="30"/>
+
+                                <TextBlock Text="主页"
+                                           Margin="32,-1,0,0"
+                                           Style="{StaticResource font_style}"/>
+
+                            </StackPanel>
+
+                            <!--
+                            <ListBoxItem.ToolTip>
+                                <ToolTip x:Name="tt_home"
+                                         Content="主页"
+                                         Style="{StaticResource tt_style}"/>
+                            </ListBoxItem.ToolTip>-->
+                        </ListViewItem>
+
+                        <!-- search button -->
+                        <ListViewItem HorizontalAlignment="Left"
+                                      Margin="0,0,0,15"
+                                      x:Name="Search_Btn">
+
+                            <behaviour:Interaction.Triggers>
+                                <behaviour:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ChangePageCommand}" 
+                                        CommandParameter="SearchUserControl"/>
+                                </behaviour:EventTrigger>
+
+                                <behaviour:EventTrigger EventName="MouseEnter">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ListViewItemMouseEnterCommand}" 
+                                        CommandParameter="搜索"/>
+                                </behaviour:EventTrigger>
+
+                                <behaviour:EventTrigger EventName="MouseLeave">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ListViewItemMouseLeaveCommand}"/>
+                                </behaviour:EventTrigger>
+                            </behaviour:Interaction.Triggers>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Width="180">
+
+                                <Image Source="../Assets/Btn_search.png"
+                                       Stretch="Fill"
+                                       Margin="11,0,0,0"
+                                       Height="30"
+                                       Width="30"/>
+
+                                <TextBlock Text="搜索"
+                                           Margin="32,-1,0,0"
+                                           Style="{StaticResource font_style}"/>
+
+                            </StackPanel>
+
+                            <!--
+                            <ListBoxItem.ToolTip>
+                                <ToolTip x:Name="tt_search"
+                                         Content="搜索"
+                                         Style="{StaticResource tt_style}"/>
+                            </ListBoxItem.ToolTip>-->
+                        </ListViewItem>
+
+                        <!-- list button -->
+                        <ListViewItem HorizontalAlignment="Left"
+                                      Margin="0,0,0,15"
+                                      x:Name="List_Btn">
+
+                            <StackPanel Orientation="Horizontal"
+                                        Width="180">
+
+                                <behaviour:Interaction.Triggers>
+                                    <behaviour:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                        <behaviour:InvokeCommandAction 
+                                        Command="{Binding ChangePageCommand}" 
+                                        CommandParameter="ListUserControl"/>
+                                    </behaviour:EventTrigger>
+
+                                    <behaviour:EventTrigger EventName="MouseEnter">
+                                        <behaviour:InvokeCommandAction 
+                                        Command="{Binding ListViewItemMouseEnterCommand}" 
+                                        CommandParameter="列表"/>
+                                    </behaviour:EventTrigger>
+
+                                    <behaviour:EventTrigger EventName="MouseLeave">
+                                        <behaviour:InvokeCommandAction 
+                                        Command="{Binding ListViewItemMouseLeaveCommand}"/>
+                                    </behaviour:EventTrigger>
+                                </behaviour:Interaction.Triggers>
+
+                                <Image Source="../Assets/Btn_list.png"
+                                       Stretch="Fill"
+                                      Margin="11,0,0,0"
+                                       Height="30"
+                                       Width="30"/>
+
+                                <TextBlock Text="列表"
+                                           Margin="32,-1,0,0"
+                                           Style="{StaticResource font_style}"/>
+
+                            </StackPanel>
+
+                            <!--
+                            <ListBoxItem.ToolTip>
+                                <ToolTip x:Name="tt_list"
+                                         Content="列表"
+                                         Style="{StaticResource tt_style}"/>
+                            </ListBoxItem.ToolTip>-->
+                        </ListViewItem>
+
+                        <!-- app button -->
+                        <ListViewItem HorizontalAlignment="Left"
+                                      Margin="0,0,0,15"
+                                      x:Name="App_Btn">
+
+                            <behaviour:Interaction.Triggers>
+                                <behaviour:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ChangePageCommand}" 
+                                        CommandParameter="AppUserControl"/>
+                                </behaviour:EventTrigger>
+
+                                <behaviour:EventTrigger EventName="MouseEnter">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ListViewItemMouseEnterCommand}" 
+                                        CommandParameter="应用"/>
+                                </behaviour:EventTrigger>
+
+                                <behaviour:EventTrigger EventName="MouseLeave">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ListViewItemMouseLeaveCommand}"/>
+                                </behaviour:EventTrigger>
+                            </behaviour:Interaction.Triggers>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Width="180">
+
+                                <Image Source="../Assets/Btn_other.png"
+                                       Stretch="Fill"
+                                      Margin="11,0,0,0"
+                                       Height="30"
+                                       Width="30"/>
+
+                                <TextBlock Text="应用"
+                                           Margin="32,-1,0,0"
+                                           Style="{StaticResource font_style}"/>
+
+                            </StackPanel>
+
+                            <!--
+                            <ListBoxItem.ToolTip>
+                                <ToolTip x:Name="tt_app"
+                                         Content="应用"
+                                         Style="{StaticResource tt_style}"/>
+                            </ListBoxItem.ToolTip>-->
+                        </ListViewItem>
+
+                        <!-- save button -->
+                        <ListViewItem HorizontalAlignment="Left"
+                                      Margin="0,0,0,15"
+                                      x:Name="Save_Btn">
+
+                            <behaviour:Interaction.Triggers>
+                                <behaviour:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ChangePageCommand}" 
+                                        CommandParameter="ExportUserControl"/>
+                                </behaviour:EventTrigger>
+
+                                <behaviour:EventTrigger EventName="MouseEnter">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ListViewItemMouseEnterCommand}" 
+                                        CommandParameter="导出"/>
+                                </behaviour:EventTrigger>
+
+                                <behaviour:EventTrigger EventName="MouseLeave">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ListViewItemMouseLeaveCommand}"/>
+                                </behaviour:EventTrigger>
+                            </behaviour:Interaction.Triggers>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Width="180">
+
+                                <Image Source="../Assets/Btn_save.png"
+                                       Stretch="Fill"
+                                      Margin="11,0,0,0"
+                                       Height="30"
+                                       Width="30"/>
+
+                                <TextBlock Text="导出"
+                                           Margin="32,-1,0,0"
+                                           Style="{StaticResource font_style}"/>
+
+                            </StackPanel>
+
+                            <!--
+                            <ListBoxItem.ToolTip>
+                                <ToolTip x:Name="tt_save"
+                                         Content="导出"
+                                         Style="{StaticResource tt_style}"/>
+                            </ListBoxItem.ToolTip>-->
+                        </ListViewItem>
+
+                        <!-- setting button -->
+                        <ListViewItem HorizontalAlignment="Left"
+                                      Margin="0,0,0,15"
+                                      x:Name="Setting_Btn">
+
+                            <behaviour:Interaction.Triggers>
+                                <behaviour:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ChangePageCommand}" 
+                                        CommandParameter="SettingUserControl"/>
+                                </behaviour:EventTrigger>
+
+                                <behaviour:EventTrigger EventName="MouseEnter">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ListViewItemMouseEnterCommand}" 
+                                        CommandParameter="设置"/>
+                                </behaviour:EventTrigger>
+
+                                <behaviour:EventTrigger EventName="MouseLeave">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ListViewItemMouseLeaveCommand}"/>
+                                </behaviour:EventTrigger>
+                            </behaviour:Interaction.Triggers>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Width="180">
+
+                                <Image Source="../Assets/Btn_setting.png"
+                                       Stretch="Fill"
+                                      Margin="11,0,0,0"
+                                       Height="30"
+                                       Width="30"/>
+
+                                <TextBlock Text="设置"
+                                           Margin="32,-1,0,0"
+                                           Style="{StaticResource font_style}"/>
+
+                            </StackPanel>
+
+                            <!--
+                            <ListBoxItem.ToolTip>
+                                <ToolTip x:Name="tt_setting"
+                                         Content="设置"
+                                         Style="{StaticResource tt_style}"/>
+                            </ListBoxItem.ToolTip>-->
+                        </ListViewItem>
+
+                        <!-- about button -->
+                        <ListViewItem HorizontalAlignment="Left"
+                                      Margin="0,0,0,15"
+                                      x:Name="About_Btn">
+
+                            <behaviour:Interaction.Triggers>
+                                <behaviour:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ChangePageCommand}" 
+                                        CommandParameter="AboutUserControl"/>
+                                </behaviour:EventTrigger>
+
+                                <behaviour:EventTrigger EventName="MouseEnter">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ListViewItemMouseEnterCommand}" 
+                                        CommandParameter="关于"/>
+                                </behaviour:EventTrigger>
+
+                                <behaviour:EventTrigger EventName="MouseLeave">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ListViewItemMouseLeaveCommand}"/>
+                                </behaviour:EventTrigger>
+                            </behaviour:Interaction.Triggers>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Width="180">
+
+                                <Image Source="../Assets/Btn_about.png"
+                                       Stretch="Fill"
+                                      Margin="11,0,0,0"
+                                       Height="30"
+                                       Width="30"/>
+
+                                <TextBlock Text="关于"
+                                           Margin="32,-1,0,0"
+                                           Style="{StaticResource font_style}"/>
+
+                            </StackPanel>
+
+                            <!--
+                            <ListBoxItem.ToolTip>
+                                <ToolTip x:Name="tt_about"
+                                         Content="关于"
+                                         Style="{StaticResource tt_style}"/>
+                            </ListBoxItem.ToolTip>-->
+                        </ListViewItem>
+
+                        <!-- quit button -->
+                        <ListViewItem HorizontalAlignment="Left"
+                                      Margin="0,0,0,15"
+                                      x:Name="Quit_Btn">
+
+                            <behaviour:Interaction.Triggers>
+                                <behaviour:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding QuitCommand}"/>
+                                </behaviour:EventTrigger>
+
+                                <behaviour:EventTrigger EventName="MouseEnter">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ListViewItemMouseEnterCommand}" 
+                                        CommandParameter="退出"/>
+                                </behaviour:EventTrigger>
+
+                                <behaviour:EventTrigger EventName="MouseLeave">
+                                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding ListViewItemMouseLeaveCommand}"/>
+                                </behaviour:EventTrigger>
+                            </behaviour:Interaction.Triggers>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Width="180">
+
+                                <Image Source="../Assets/Btn_close.png"
+                                       Stretch="Fill"
+                                      Margin="11,0,0,0"
+                                       Height="30"
+                                       Width="30"/>
+
+                                <TextBlock Text="退出"
+                                           Margin="32,-1,0,0"
+                                           Style="{StaticResource font_style}"/>
+
+                            </StackPanel>
+
+                            <!--
+                            <ListBoxItem.ToolTip>
+                                <ToolTip x:Name="tt_quit"
+                                         Content="退出"
+                                         Style="{StaticResource tt_style}"/>
+                            </ListBoxItem.ToolTip>-->
+                        </ListViewItem>
+
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                            <Border x:Name="Bd"
+                                                    Height="50"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    Background="{TemplateBinding Background}"
+                                                    Padding="{TemplateBinding Padding}"
+                                                    SnapsToDevicePixels="True">
+
+                                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+
+                                            </Border>
+
+                                            <ControlTemplate.Triggers>
+                                                <MultiTrigger>
+                                                    <MultiTrigger.Conditions>
+                                                        <Condition Property="IsMouseOver" Value="True"/>
+                                                    </MultiTrigger.Conditions>
+
+                                                    <Setter Property="Background"
+                                                            TargetName="Bd"
+                                                            Value="#99FFFF"/>
+
+                                                    <Setter Property="BorderBrush"
+                                                            TargetName="Bd"
+                                                            Value="#99FFFF"/>
+                                                </MultiTrigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
