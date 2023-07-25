@@ -3,17 +3,88 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:behaviour="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:CraftHelper.Views"
              xmlns:vm="clr-namespace:CraftHelper.ViewModels" d:DataContext="{d:DesignInstance Type=vm:SearchUsrCtrlViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="959">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="ListBoxTemplate">
+            <StackPanel Margin="3">
+                <DockPanel>
+                    <TextBlock Text="{Binding ItemName}" Foreground="Black" FontWeight="Bold" />
+                    <TextBlock Text=" "/>
+                    <TextBlock Text="{Binding ItemId}" Foreground="Gray" />
+                </DockPanel>
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+
     <Grid Background="White">
         <Grid.RowDefinitions>
-            <RowDefinition Height="25*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="20*"/>
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="1" Grid.Column="0"
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBox Grid.Row="0" Grid.Column="0"
+                 Margin="50,50,20,20"
+                 MaxLines="1"
+                 VerticalContentAlignment="Center"
+                 Padding="10,0,0,0"
+                 Text="{Binding TextBoxContent, FallbackValue=请输入要搜索的物品名称}"
+                 Foreground="{Binding TextBoxColor, FallbackValue=Gray}"
+                 FontSize="20">
+            
+            <behaviour:Interaction.Triggers>
+                <behaviour:EventTrigger EventName="GotFocus">
+                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding TextBoxGotFocusCommand}"/>
+                </behaviour:EventTrigger>
+            </behaviour:Interaction.Triggers>
+            
+        </TextBox>
+
+        <Button Grid.Row="0" Grid.Column="1"
+                Margin="20,50,400,20"
+                Content="搜索"
+                FontSize="20"/>
+
+        <ListBox Grid.Row="1" Grid.Column="0"
+                 Margin="50,5,20,5"
+                 Name="SearchResultListBox" 
+                 ItemsSource="{Binding SearchResultTable}" 
+                 ItemTemplate="{StaticResource ListBoxTemplate}">
+
+            <behaviour:Interaction.Triggers>
+                <behaviour:EventTrigger EventName="MouseDoubleClick">
+                    <behaviour:InvokeCommandAction 
+                                        Command="{Binding SearchListBoxDoubleClickCommand}"
+                                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListBox}}"/>
+                </behaviour:EventTrigger>
+            </behaviour:Interaction.Triggers>
+        </ListBox>
+
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="5*"/>
+            </Grid.RowDefinitions>
+            
+            <ListBox Grid.Row="1" Grid.Column="1"
+                 Margin="20,5,50,5"
+                 Name="AdditionListBox" 
+                 ItemsSource="{Binding SearchAdditionTable}" 
+                 ItemTemplate="{StaticResource ListBoxTemplate}" />
+        </Grid>
+
+        <TextBlock Grid.Row="3" Grid.Column="0"
                    Margin="10,0,0,0"
                    x:Name="state_text"
                    FontSize="18"
