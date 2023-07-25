@@ -21,7 +21,7 @@ namespace CraftHelper.Models
         //};
 
         public readonly static List<MyBuildInfo> _BuildInfo = new List<MyBuildInfo>() {
-            new MyBuildInfo { Name = "Build Date",  Description = "2023-7-24"},
+            new MyBuildInfo { Name = "Build Date",  Description = "2023-7-25"},
             new MyBuildInfo { Name = "Build Machine",  Description = "x64-based computer"},
             new MyBuildInfo { Name = "Build CPU",  Description = "11th Gen Intel(R) Core(TM) i9-11900H @ 2.50GHz"},
             new MyBuildInfo { Name = "Build OS",  Description = "Windows 11 Professional Edition (OS Build 22621.1992)"},
