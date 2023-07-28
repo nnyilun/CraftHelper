@@ -40,10 +40,11 @@ namespace CraftHelper.Models
             else
             {
                 rootElement["Base"].AppendChild(CreateElement("Version", "Unknown"));
-                StateTextModel.StateText = "版本号获取错误！";
+                StateTextModel._StateText = "版本号获取错误！";
                 StateTextModel._Color = "Red";
             }
-            rootElement["Base"].AppendChild(CreateElement("CacheLocation", Path.Combine(ConfigPath, "temp")));
+            rootElement["Base"].AppendChild(CreateElement("TempLocation", Path.Combine(ConfigPath, "temp")));
+            rootElement["Base"].AppendChild(CreateElement("CacheLocation", Path.Combine(ConfigPath, "cache")));
             rootElement["Base"].AppendChild(CreateElement("CacheLimit", "100"));
 
             rootElement.AppendChild(xmlDoc.CreateElement("GameInfo"));

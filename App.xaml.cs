@@ -18,7 +18,7 @@ namespace CraftHelper
     {
         public App()
         {
-            StateTextModel.StateText = "状态  就绪";
+            StateTextModel._StateText = "状态  就绪";
             StateTextModel._Color = "Gray";
             SettingModel.ReadConfig();
             AboutModel.ConsolePrintBuildInfo();

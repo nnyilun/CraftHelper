@@ -10,7 +10,7 @@ namespace CraftHelper.Models
     public class StateTextModel : BaseModel
     {
         private StateTextModel() { }
-        public static string StateText { get; set; }
+        public static string _StateText { get; set; }
         public static string _Color { get; set; }
     }
 }

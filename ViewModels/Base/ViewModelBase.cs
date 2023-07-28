@@ -24,8 +24,8 @@ namespace CraftHelper.ViewModels.Base
         // App._StateText.StateText为全局的static变量，App._StateText是单例，修改作用于全局
         public string StateText
         {
-            get { return StateTextModel.StateText; }
-            set { StateTextModel.StateText = value; OnPropertyChanged(); }
+            get { return StateTextModel._StateText; }
+            set { StateTextModel._StateText = value; OnPropertyChanged(); }
         }
 
         public string StateColor
@@ -33,5 +33,7 @@ namespace CraftHelper.ViewModels.Base
             get { return StateTextModel._Color; }
             set { StateTextModel._Color = value; OnPropertyChanged(); }
         }
+
+        public static Dictionary<int, BaseModel.JobInfo> SpecialJob => BaseModel.SpecialJob;
     }
 }

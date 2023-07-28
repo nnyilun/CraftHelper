@@ -13,13 +13,21 @@
         <DataTemplate x:Key="ListBoxTemplate">
             <StackPanel Margin="3">
                 <DockPanel>
-                    <TextBlock Text="{Binding ItemName}" Foreground="Black" FontWeight="Bold" />
-                    <TextBlock Text=" "/>
-                    <TextBlock Text="{Binding ItemId}" Foreground="Gray" />
+                    <Image Source="{Binding ItemIconPath}" Width="40" Height="40" />
+                    <TextBlock Text="{Binding ItemName}" Foreground="Black" FontWeight="Bold" FontSize="22" VerticalAlignment="Center"/>
+                    <TextBlock Text="  "/>
+                    <TextBlock Text="{Binding ItemId}" Foreground="Gray" FontSize="22" VerticalAlignment="Center"/>
                 </DockPanel>
             </StackPanel>
         </DataTemplate>
     </UserControl.Resources>
+
+    <behaviour:Interaction.Triggers>
+        <behaviour:EventTrigger EventName="Unloaded">
+            <behaviour:InvokeCommandAction 
+                                        Command="{Binding UnloadedSearchUsrCtrlCommand}"/>
+        </behaviour:EventTrigger>
+    </behaviour:Interaction.Triggers>
 
     <Grid Background="White">
         <Grid.RowDefinitions>
@@ -35,6 +43,7 @@
 
         <TextBox Grid.Row="0" Grid.Column="0"
                  Margin="50,50,20,20"
+                 x:Name="SearchBox"
                  MaxLines="1"
                  VerticalContentAlignment="Center"
                  Padding="10,0,0,0"
@@ -53,12 +62,21 @@
 
         <Button Grid.Row="0" Grid.Column="1"
                 Margin="20,50,400,20"
-                Content="搜索"
-                FontSize="20"/>
+                Content="{Binding SearchBtnContent, FallbackValue=搜索}"
+                FontSize="20">
+            
+            <behaviour:Interaction.Triggers>
+                <behaviour:EventTrigger EventName="Click">
+                    <behaviour:InvokeCommandAction 
+                                            Command="{Binding SearchBtnClickCommand}"/>
+                </behaviour:EventTrigger>
+            </behaviour:Interaction.Triggers>
+            
+        </Button>
 
         <ListBox Grid.Row="1" Grid.Column="0"
                  Margin="50,5,20,5"
-                 Name="SearchResultListBox" 
+                 x:Name="SearchResultListBox" 
                  ItemsSource="{Binding SearchResultTable}" 
                  ItemTemplate="{StaticResource ListBoxTemplate}">
 
@@ -76,20 +94,167 @@
                 <RowDefinition Height="5*"/>
                 <RowDefinition Height="5*"/>
             </Grid.RowDefinitions>
-            
+
+            <StackPanel Grid.Row="0" Grid.Column="1">
+                <DockPanel>
+                    <TextBlock Margin="20,10,10,10"
+                               Text="品级范围" 
+                               Foreground="Black" 
+                               FontSize="20" 
+                               VerticalAlignment="Center"/>
+
+                    <TextBlock Margin="10,10,0,10"
+                               Text="[" 
+                               Foreground="Black" 
+                               FontSize="20" 
+                               VerticalAlignment="Center"/>
+
+                    <TextBox Grid.Row="0" Grid.Column="0"
+                             Width="50"
+                             Margin="5,10,5,10"
+                             MaxLines="1"
+                             VerticalContentAlignment="Center"
+                             HorizontalContentAlignment="Center"
+                             Text="{Binding ItemLevelLow, FallbackValue=0}"
+                             FontSize="20"/>
+
+                    <TextBlock Margin="0,10,0,10"
+                               Text="-" 
+                               Foreground="Black" 
+                               FontSize="20" 
+                               VerticalAlignment="Center"/>
+
+                    <TextBox Grid.Row="0" Grid.Column="0"
+                             Width="50"
+                             Margin="5,10,5,10"
+                             MaxLines="1"
+                             VerticalContentAlignment="Center"
+                             HorizontalContentAlignment="Center"
+                             Text="{Binding ItemLevelHigh, FallbackValue=0}"
+                             FontSize="20"/>
+                    
+                    <TextBlock Margin="0,10,10,10"
+                               Text="]" 
+                               Foreground="Black" 
+                               FontSize="20" 
+                               VerticalAlignment="Center"/>
+
+                    <TextBlock Margin="10"
+                               Text="0为不设限" 
+                               Foreground="Black"
+                               VerticalAlignment="Center"
+                               FontSize="20"/>
+
+                </DockPanel>
+                
+                <DockPanel>
+                    <TextBlock Margin="20,10,10,10"
+                               Text="职业" 
+                               Foreground="Black" 
+                               HorizontalAlignment="Center"
+                               FontSize="20" 
+                               VerticalAlignment="Center"/>
+
+                    <ComboBox Margin="10,10,200,10"
+                              FontSize="18"
+                              ItemsSource="{Binding SpecialJob}" 
+                              DisplayMemberPath="Value.JobChName"
+                              SelectedValuePath="Value"
+                              SelectedValue="{Binding SelectedJob}">
+
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="ComboBoxItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                <Setter Property="VerticalContentAlignment" Value="Center" />
+                            </Style>
+                        </ComboBox.ItemContainerStyle>
+                    </ComboBox>
+                </DockPanel>
+                
+                <DockPanel>
+                    <TextBlock Margin="20,10,10,10"
+                               Text="API" 
+                               Foreground="Black" 
+                               HorizontalAlignment="Center"
+                               FontSize="20" 
+                               VerticalAlignment="Center"/>
+
+                    <RadioButton Margin="10" 
+                                 FontSize="20" 
+                                 Content="CH_API" 
+                                 GroupName="API" 
+                                 IsChecked="{Binding IsChApiSelected}" />
+                    <RadioButton Margin="10" 
+                                 FontSize="20" 
+                                 Content="EN_API" 
+                                 GroupName="API" 
+                                 IsChecked="{Binding IsEnApiSelected}" />
+                </DockPanel>
+
+                <DockPanel>
+                    <TextBlock Margin="20,10,10,10"
+                               Text="" 
+                               Foreground="Black" 
+                               HorizontalAlignment="Center"
+                               FontSize="20" 
+                               VerticalAlignment="Center"/>
+                </DockPanel>
+
+                <DockPanel>
+                    <TextBlock Margin="20,10,10,10"
+                               Text="添加列表" 
+                               Foreground="Black" 
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               FontSize="16"/>
+                </DockPanel>
+            </StackPanel>
+
             <ListBox Grid.Row="1" Grid.Column="1"
                  Margin="20,5,50,5"
-                 Name="AdditionListBox" 
+                 x:Name="AdditionListBox" 
                  ItemsSource="{Binding SearchAdditionTable}" 
                  ItemTemplate="{StaticResource ListBoxTemplate}" />
         </Grid>
 
-        <TextBlock Grid.Row="3" Grid.Column="0"
+        <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <TextBlock Grid.Row="0" Grid.Column="0"
                    Margin="10,0,0,0"
                    x:Name="state_text"
                    FontSize="18"
                    Text="{Binding StateText, FallbackValue=获取状态失败}"
                    Foreground="{Binding StateColor, FallbackValue=Coral}"
                    Style="{StaticResource font_style}"/>
+
+            <ProgressBar Grid.Row="0" Grid.Column="1"
+                         Margin="10,10,10,10"
+                         Minimum="0"
+                         Maximum="{Binding ProgressBarMax}"
+                         Value="{Binding ProgressBarValue}"
+                         Visibility="{Binding ProgressBarVisibility}"/>
+
+            <DockPanel Grid.Row="0" Grid.Column="2"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center">
+                
+                <TextBlock Margin="10"
+                       FontSize="20"
+                       Text="{Binding ProgressContextValue, FallbackValue=0}"/>
+
+                <TextBlock Margin="10"
+                       FontSize="20"
+                       Text="/"/>
+
+                <TextBlock Margin="10"
+                       FontSize="20"
+                       Text="{Binding ProgressContextTotal, FallbackValue=0}"/>
+            </DockPanel>
+        </Grid>
     </Grid>
 </UserControl>

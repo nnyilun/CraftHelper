@@ -6,7 +6,7 @@
 
 ## 功能
 
-1. 搜索物品
+1. 搜索物品（已完成）
 2. 查询物品配方
 3. 计算所选中物品需要的材料总和
 4. 导出到Excel
@@ -15,7 +15,7 @@
 7. 不同版本的同步支持
 8. 还在想...别着急...
 
-## 都还没做，别急）
+## 大部分都还没做，别急）
 是为了帮助自己学习c#以及WPF桌面应用程序的开发，所以指不定哪天就弃坑了）
 
 ## 遵从MIT协议
@@ -26,3 +26,14 @@
 软件内侧边栏图标来自[阿里巴巴矢量图标库](https://www.iconfont.cn/collections/detail?cid=45375)
 
 侧边栏参考[Navigation-Drawer-Sidebar-Menu-in-WPF](https://github.com/CSharpDesignPro/Navigation-Drawer-Sidebar-Menu-in-WPF)
+
+
+## 软件截图
+
+搜索页
+
+![](./Screenshot/Search.png)
+
+关于页
+
+![](./Screenshot/About.png)
