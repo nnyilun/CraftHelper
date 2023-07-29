@@ -32,7 +32,7 @@
 
 搜索页
 
-![](./Screenshot/Search.jpg)
+![](./Screenshot/Search.png)
 
 关于页
 

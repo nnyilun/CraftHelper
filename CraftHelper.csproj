@@ -404,7 +404,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Screenshot\About.png" />
-    <Resource Include="Screenshot\Search.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Screenshot\Search.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

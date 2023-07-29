@@ -15,7 +15,6 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Security.Policy;
 using System.Threading;
-using static CraftHelper.Models.BaseModel;
 using System.Windows.Documents;
 
 namespace CraftHelper.ViewModels
@@ -24,6 +23,7 @@ namespace CraftHelper.ViewModels
     {
         private readonly UserControl _this;
 
+        private string _api = SettingModel.xmlDoc["Config"]["Api"]["ChXiv"].InnerText;
         static readonly HttpClient client = new HttpClient();
         private readonly string IconPath = Path.Combine(SettingModel.xmlDoc["Config"]["Base"]["CacheLocation"].InnerText, "images");
         private CancellationTokenSource cancellationTokenSource;
@@ -45,8 +45,10 @@ namespace CraftHelper.ViewModels
         private bool _IsEnApiSelected = false;
         private int _ItemLevelLow = 0;
         private int _ItemLevelHigh = 0;
+        private bool _IsChecked = false;
 
         public ICommandBase SearchListBoxDoubleClickCommand { get; set; }
+        public ICommandBase AdditionListBoxDoubleClickCommand { get; set; }
         public ICommandBase TextBoxGotFocusCommand { get; set; }
         public ICommandBase SearchBtnClickCommand { get; set; }
         public ICommandBase UnloadedSearchUsrCtrlCommand { get; set; }
@@ -55,6 +57,7 @@ namespace CraftHelper.ViewModels
         {
             _this = main;
             SearchListBoxDoubleClickCommand = new ICommandBase((object param) => SearchListBoxDoubleClick(param as ListBox));
+            AdditionListBoxDoubleClickCommand = new ICommandBase((object param) => AdditionListBoxDoubleClick(param as ListBox));
             TextBoxGotFocusCommand = new ICommandBase(TextBoxGotFocus);
             SearchBtnClickCommand = new ICommandBase(SearchBtnClick);
             UnloadedSearchUsrCtrlCommand = new ICommandBase(UnloadedSearchUsrCtrl);
@@ -68,6 +71,12 @@ namespace CraftHelper.ViewModels
             {
                 SearchAdditionTable.Add(SearchResultTable[obj.SelectedIndex]);
             }
+            ((ListBox)_this.FindName("AdditionListBox")).Items.Refresh();
+        }
+
+        public void AdditionListBoxDoubleClick(ListBox obj)
+        {
+            SearchAdditionTable.RemoveAt(obj.SelectedIndex);
             ((ListBox)_this.FindName("AdditionListBox")).Items.Refresh();
         }
 
@@ -92,6 +101,13 @@ namespace CraftHelper.ViewModels
             { 
                 if ( SearchBtnContent == "搜索" )
                 {
+                    (var check, var msg) = CheckParamsValidity();
+                    if (!check)
+                    {
+                        SearchError(msg);
+                        return;
+                    }
+
                     StateText = "搜索中...";
                     StateColor = "Aqua";
                     SearchBtnContent = "取消";
@@ -99,10 +115,11 @@ namespace CraftHelper.ViewModels
                     if (!Directory.Exists(IconPath)) { RefreshIconFolder(); }
 
                     SearchResultTable.Clear();
+                    ((ListBox)_this.FindName("SearchResultListBox")).Items.Refresh();
 
                     cancellationTokenSource = new CancellationTokenSource();
 
-                    await SearchItemInChApi(TextBoxContent, cancellationTokenSource.Token);
+                    await SearchItemInChApi(TextBoxContent, GenerateSearchUrl(), cancellationTokenSource.Token);
 
                     SearchBtnContent = "搜索";
                     StateText = "搜索完成";
@@ -128,6 +145,56 @@ namespace CraftHelper.ViewModels
             cancellationTokenSource?.Cancel();
         }
 
+        private void SearchError(string msg)
+        {
+            StateText = "搜索失败";
+            StateColor = "Red";
+            MessageBox.Show(msg, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        private string GenerateSearchUrl()
+        {
+            ChangeApi();
+
+            //filters=LevelItem>630,LevelItem<=640
+            string _url = "&filters=";
+            if(_ItemLevelLow != 0)
+            {
+                _url += $"LevelItem>={_ItemLevelLow},";
+            }
+            if (_ItemLevelHigh != 0)
+            {
+                _url += $"LevelItem<={_ItemLevelHigh},";
+            }
+            if (SelectedJob.JobChName != "不限")
+            {
+                _url += $"ClassJobCategory.{SelectedJob.JobAbbreviation[0]}=1,";
+            }
+
+            if (_url == "&filters=")
+            {
+                return "";
+            }
+
+            if (_url.EndsWith(","))
+            {
+                _url = _url.Substring(0, _url.Length - 1);
+            }
+            return _url;
+        }
+
+        private void ChangeApi()
+        {
+            if (IsChApiSelected)
+            {
+                _api = SettingModel.xmlDoc["Config"]["Api"]["ChXiv"].InnerText;
+            }
+            else
+            {
+                _api = SettingModel.xmlDoc["Config"]["Api"]["EnXiv"].InnerText;
+            }
+        }
+
         private void JudgeIsCancel(CancellationToken _cancellationToken)
         {
             if (_cancellationToken.IsCancellationRequested)
@@ -145,15 +212,15 @@ namespace CraftHelper.ViewModels
             }
         }
 
-        private async Task SearchItemInChApi(string Content, CancellationToken _cancellationToken)
+        private async Task SearchItemInChApi(string Content, string filter, CancellationToken _cancellationToken)
         {
-            string responseString = await GetStringAsyncWithCancellation(SettingModel.xmlDoc["Config"]["Api"]["ChXiv"].InnerText + "search?indexes=Item&string=" + Content, _cancellationToken);
-
+            string responseString = await GetStringAsyncWithCancellation(_api + "search?indexes=Item&string=" + Content + filter, _cancellationToken);
             JObject data = JsonConvert.DeserializeObject<JObject>(responseString);
-            if (data["Pagination"]["ResultsTotal"].ToString() == "0") { return; }
-
+            
             ProgressContextTotal = ProgressBarMax = data["Pagination"]["ResultsTotal"].ToString();
             ProgressContextValue = ProgressBarValue = "0";
+            
+            if (data["Pagination"]["ResultsTotal"].ToString() == "0") { return; }
 
             JArray results;
             Uri _uri;
@@ -164,16 +231,16 @@ namespace CraftHelper.ViewModels
                 results = data["Results"].ToObject<JArray>();
                 foreach (var result in results)
                 {
-                    _uri = new Uri(SettingModel.xmlDoc["Config"]["Api"]["ChXiv"].InnerText + result["Icon"].ToString());
+                    _uri = new Uri(_api + result["Icon"].ToString());
                     SearchResultTable.Add(new SearchModel.SearchInfo { ItemName = result["Name"].ToString(), ItemId = int.Parse(result["ID"].ToString()), ItemIconPath = Path.Combine(IconPath, _uri.Segments[_uri.Segments.Length - 1]) });
                     ((ListBox)_this.FindName("SearchResultListBox")).Items.Refresh();
 
-                    if (File.Exists(Path.Combine(IconPath, _uri.Segments[_uri.Segments.Length - 1])))
+                    if (IsChecked || File.Exists(Path.Combine(IconPath, _uri.Segments[_uri.Segments.Length - 1])))
                     {
                         ProgressContextValue = ProgressBarValue = (++cnt).ToString();
                         continue; 
                     }
-                    response = await client.GetAsync(SettingModel.xmlDoc["Config"]["Api"]["ChXiv"].InnerText + result["Icon"].ToString(), _cancellationToken);
+                    response = await client.GetAsync(_api + result["Icon"].ToString(), _cancellationToken);
                     JudgeIsCancel(_cancellationToken);
 
                     using (Stream contentStream = await response.Content.ReadAsStreamAsync())
@@ -187,12 +254,27 @@ namespace CraftHelper.ViewModels
                 ((ListBox)_this.FindName("SearchResultListBox")).Items.Refresh();
 
                 if (data["Pagination"]["PageNext"].ToString() == "") { break; }
-                responseString = await GetStringAsyncWithCancellation(SettingModel.xmlDoc["Config"]["Api"]["ChXiv"].InnerText + "search?indexes=Item&string=" + Content + $"&Page={i}", _cancellationToken);
+
+                responseString = await GetStringAsyncWithCancellation(_api + "search?indexes=Item&string=" + Content + filter + $"&Page={i}", _cancellationToken);
                 JudgeIsCancel(_cancellationToken);
                 data = JsonConvert.DeserializeObject<JObject>(responseString);
             }
             SearchResultTable = SearchResultTable.Distinct().OrderBy(info => info.ItemName).ToList();
             ((ListBox)_this.FindName("SearchResultListBox")).Items.Refresh();
+        }
+
+        private (bool, string) CheckParamsValidity()
+        {
+            if (string.IsNullOrWhiteSpace(TextBoxContent) || TextBoxContent == "请输入物品要搜索的内容")
+            {
+                Console.WriteLine(TextBoxContent);
+                return (false, "搜索框为空！");
+            }
+            if (_ItemLevelLow > _ItemLevelHigh)
+            {
+                return (false, "等级范围区间不合理，最小值比最大值大！");
+            }
+            return (true, null);
         }
 
         public static bool IsEnglish(string input)
@@ -297,13 +379,31 @@ namespace CraftHelper.ViewModels
         public string ItemLevelLow
         {
             get { return _ItemLevelLow.ToString(); }
-            set { int.TryParse(value, out _ItemLevelLow);OnPropertyChanged(); }
+            set { 
+                if (int.TryParse(value, out int tmp))
+                {
+                    _ItemLevelLow = tmp;
+                }
+                OnPropertyChanged(); 
+            }
         }
 
         public string ItemLevelHigh
         {
             get { return _ItemLevelHigh.ToString(); }
-            set { int.TryParse(value, out _ItemLevelHigh); OnPropertyChanged(); }
+            set {
+                if (int.TryParse(value, out int tmp))
+                {
+                    _ItemLevelHigh = tmp;
+                }
+                OnPropertyChanged(); 
+            }
+        }
+
+        public bool IsChecked
+        {
+            get { return _IsChecked; }
+            set { _IsChecked = value; OnPropertyChanged(); }
         }
     }
 }
